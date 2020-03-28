@@ -9,8 +9,9 @@ let CHARS_ACROSS, CHARS_DOWN;
 let CHAR_WIDTH, CHAR_HEIGHT;
 let CHARS = [];
 
+let FPS = 30;
+
 function updateDisplay() {
-  setLines();
   let rows = _.chunk(CHARS, CHARS_ACROSS)
   .map(row => row
     .map(char => char ? 'x' : ' ')
@@ -22,15 +23,18 @@ function updateDisplay() {
   }
 }
 
-function setupEnvironment() {
+function draw() {};
+
+function init() {
   setCharDimensions();
   setDimensions();
-  updateDisplay()
+  setLines();
+  setInterval(draw, 1000/FPS);
 }
 
 window.onresize = function () {
   setDimensions();
-  updateDisplay();
+  setLines();
 }
 
 function setLines() {

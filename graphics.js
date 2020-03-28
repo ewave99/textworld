@@ -1,5 +1,3 @@
-setupEnvironment();
-
 function ellipse(x, y, w, h) {
   for (var angle = 0; angle < 360; angle++) {
     let rad = angle * Math.PI / 180;
@@ -12,4 +10,5 @@ function ellipse(x, y, w, h) {
       CHARS[index] = 1;
     }
   }
+  updateDisplay();
 }
