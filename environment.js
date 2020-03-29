@@ -23,13 +23,10 @@ function updateDisplay() {
   }
 }
 
-function draw() {};
-
-function init() {
+document.body.onload = function() {
   setCharDimensions();
   setDimensions();
   setLines();
-  setInterval(draw, 1000/FPS);
 }
 
 window.onresize = function () {
