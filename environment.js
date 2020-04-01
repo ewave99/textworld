@@ -3,13 +3,15 @@ String.prototype.replaceAt = function(index, replacement) {
 }
 
 const DISPLAY = document.getElementById('display');
-const TEXTSIZE = 11;
+const TEXTSIZE = 8;
 document.body.style.fontSize = TEXTSIZE.toString() + 'px';
 let CHARS_ACROSS, CHARS_DOWN;
 let CHAR_WIDTH, CHAR_HEIGHT;
 let CHARS = [];
 
 let FPS = 30;
+
+function draw() {};
 
 function updateDisplay() {
   let rows = _.chunk(CHARS, CHARS_ACROSS)
@@ -27,11 +29,13 @@ document.body.onload = function() {
   setCharDimensions();
   setDimensions();
   setLines();
+  draw();
 }
 
 window.onresize = function () {
   setDimensions();
   setLines();
+  draw();
 }
 
 function setLines() {
