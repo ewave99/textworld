@@ -1,35 +1,77 @@
-function plot(x, y, fill=true, fillvalue=1) {
+const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
+const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
+
+function plot(x, y, fillvalue=1) {
   let within_bound_x = (x >= 0 && x < CHARS_ACROSS);
   let within_bound_y = (y >= 0 && y < CHARS_DOWN);
   if (within_bound_x && within_bound_y) {
     let index = y * CHARS_ACROSS + x;
-    if (fill) {
-      if (fillvalue === 0 || fillvalue === 1) {
-        CHARS[index] = fillvalue;
+    CHARS[index] = fillvalue;
+  }
+}
+
+function ellipse(x, y, w, h, {
+  stroke = true,
+  strokevalue = 1,
+  fill = false,
+  fillvalue = 1
+} = {}) {
+  if (stroke) {
+    let px, py;
+    for (var i = 0; i < 360; i++) {
+      px = Math.round(COS_TABLE[i] * w + x);
+      py = Math.round(SIN_TABLE[i] * h + y);
+      plot(px, py, strokevalue);
+    }
+  }
+  if (fill) {
+    let hh = h*h;
+    let ww = w*w;
+    let hhww = hh*ww;
+    let x0 = w;
+    let dx = 0;
+    for (var px = 1-w; px <= w-1; px++) {
+      plot(px+x, y, fillvalue);
+    }
+    for (var py = 1; py < h; py++) {
+      let x1 = x0 - (dx - 1);
+      for (; x1 > 0; x1--) {
+        if (x1*x1*hh + py*py*ww < hhww) break;
+      }
+      dx = x0 - x1;
+      x0 = x1;
+      for (var px = 1-x0; px <= x0-1; px++) {
+        plot(px+x, -py+y, fillvalue);
+        plot(px+x, py+y, fillvalue);
       }
     }
   }
+  updateDisplay();
 }
 
-function ellipse(x, y, w, h, fill=true, fillvalue=1) {
-  for (var angle = 0; angle < 360; angle++) {
-    let rad = angle * Math.PI / 180;
-    let px = Math.round(Math.cos(rad) * w + x);
-    let py = Math.round(Math.sin(rad) * h + y);
-    plot(px, py, fill, fillvalue);
+function rect(x, y, w, h, {
+  stroke = true,
+  strokevalue = 1,
+  fill = false,
+  fillvalue = 1
+} = {}) {
+  if (fill) {
+    for (var j = 1; j < h-1; j++) {
+      for (var i = 1; i < w-1; i++) {
+        plot(i+x, j+y, fillvalue);
+      }
+    }
+  }
+  if (stroke) {
+    line(x, y, x+w, y);
+    line(x+w, y, x+w, y+h);
+    line(x+w, y+h, x, y+h);
+    line(x, y+h, x, y, strokevalue);
   }
   updateDisplay();
 }
 
-function rect(x, y, w, h, fill=true, fillvalue=1) {
-  line(x, y, x+w, y);
-  line(x+w, y, x+w, y+h);
-  line(x+w, y+h, x, y+h);
-  line(x, y+h, x, y);
-  updateDisplay();
-}
-
-function line(x0, y0, x1, y1, fillvalue=1) {
+function line(x0, y0, x1, y1, strokevalue=1) {
   if (x0 > x1) {
     var temp = x1;
     x1 = x0;
@@ -44,18 +86,18 @@ function line(x0, y0, x1, y1, fillvalue=1) {
   let dy = -Math.abs(y1-y0);
   if (dy == 0) {
     for (var i = x0; i <= x1; i++) {
-      plot(i, y0, true, fillvalue);
+      plot(i, y0, strokevalue);
     }
   } else if (dx == 0) {
     for (var i = y0; i <= y1; i++) {
-      plot(x0, i, true, fillvalue);
+      plot(x0, i, strokevalue);
     }
   } else {
     let sx = (x0 < x1) ? 1 : -1;
     let sy = (y0 < y1) ? 1 : -1;
     let err = dx + dy;
     while (x0 != x1 || y0 != y1) {
-      plot(x0, y0, true, fillvalue);
+      plot(x0, y0, strokevalue);
       let e2 = 2 * err;
       if (e2 >= dy) {
         err += dy;
@@ -66,7 +108,7 @@ function line(x0, y0, x1, y1, fillvalue=1) {
         y0 += sy
       }
     }
-    plot(x0, y0, true, fillvalue);
+    plot(x0, y0, strokevalue);
   }
   updateDisplay();
 }
