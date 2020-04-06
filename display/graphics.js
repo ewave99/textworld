@@ -1,6 +1,11 @@
 const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
+function point(x, y, fillvalue=1) {
+  plot(x, y, fillvalue);
+  updateDisplay();
+}
+
 function plot(x, y, fillvalue=1) {
   let within_bound_x = (x >= 0 && x < CHARS_ACROSS);
   let within_bound_y = (y >= 0 && y < CHARS_DOWN);
@@ -26,7 +31,7 @@ function ellipse(x, y, w, h, {
   }
   if (fill) {
     let hh = h*h;
-    let ww = w*w;
+    let ww = (w+1)*(w+1);
     let hhww = hh*ww;
     let x0 = w;
     let dx = 0;
@@ -56,17 +61,30 @@ function rect(x, y, w, h, {
   fillvalue = 1
 } = {}) {
   if (fill) {
-    for (var j = 1; j < h-1; j++) {
-      for (var i = 1; i < w-1; i++) {
+    for (var j = 1; j < h; j++) {
+      for (var i = 1; i < w; i++) {
         plot(i+x, j+y, fillvalue);
       }
     }
   }
   if (stroke) {
-    line(x, y, x+w, y);
-    line(x+w, y, x+w, y+h);
-    line(x+w, y+h, x, y+h);
+    line(x, y, x+w, y, strokevalue);
+    line(x+w, y, x+w, y+h, strokevalue);
+    line(x+w, y+h, x, y+h, strokevalue);
     line(x, y+h, x, y, strokevalue);
+  }
+  updateDisplay();
+}
+
+function arc(x, y, w, h, start, end, strokevalue=1) {
+  let px, py;
+  if (start > end) {
+    end = 360+(end % 360);
+  }
+  for (var i = start; i <= end; i++) {
+    px = Math.round(COS_TABLE[i % 360] * w + x);
+    py = Math.round(SIN_TABLE[i % 360] * h + y);
+    plot(px, py, strokevalue);
   }
   updateDisplay();
 }
