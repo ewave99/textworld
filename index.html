@@ -3,23 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Text World</title>
-    <style media="screen">
+    <style media="screen"> /* THESE STYLE ATTRIBUTES ARE CRUCIAL */
       body {
         font-family: "Courier New", Courier, monospace;
       }
       #display {
         display: inline;
-        white-space: pre;
+        white-space: pre; /* Without this it condenses all the spaces s*/
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" charset="utf-8"></script>
   </head>
   <body>
     <div id="display"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js" charset="utf-8"></script>
     <script src="display/environment.js" charset="utf-8"></script>
     <script src="display/graphics.js" charset="utf-8"></script>
-    <script src="world.js" charset="utf-8"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js" charset="utf-8"></script>
     <script src="main.js" charset="utf-8"></script>
   </body>
 </html>

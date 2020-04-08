@@ -1,6 +1,10 @@
+// These are pre-defined sets of values so the program doesn't need
+//   to calculate cos and sin every time it draws.
 const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
+// Useful if you want to plot a single point without typing
+//  updateDisplay() each time
 function point(x, y, fillvalue=1) {
   plot(x, y, fillvalue);
   updateDisplay();
@@ -15,12 +19,16 @@ function plot(x, y, fillvalue=1) {
   }
 }
 
-function ellipse(x, y, w, h, {
+function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
   stroke = true,
   strokevalue = 1,
   fill = false,
   fillvalue = 1
 } = {}) {
+  // If the width is more than 115 then the outline starts to 'crack'
+  //   as the amgles aren't precise enough.
+  // Could be fixed by drawing line segments between each point if the width
+  //   exceeds 115.
   if (stroke) {
     let px, py;
     for (var i = 0; i < 360; i++) {
@@ -30,6 +38,7 @@ function ellipse(x, y, w, h, {
     }
   }
   if (fill) {
+    // I got this algorithm off StackOverflow
     let hh = h*h;
     let ww = (w+1)*(w+1);
     let hhww = hh*ww;
@@ -77,6 +86,7 @@ function rect(x, y, w, h, {
 }
 
 function arc(x, y, w, h, start, end, strokevalue=1) {
+  // Uses the ellipse algorithm but only draws part of the outline
   let px, py;
   if (start > end) {
     end = 360+(end % 360);
@@ -90,27 +100,28 @@ function arc(x, y, w, h, start, end, strokevalue=1) {
 }
 
 function line(x0, y0, x1, y1, strokevalue=1) {
-  if (x0 > x1) {
-    var temp = x1;
-    x1 = x0;
-    x0 = temp;
-  }
-  if (y0 > y1) {
-    var temp = y1;
-    y1 = y0;
-    y0 = temp;
-  }
   let dx = Math.abs(x1-x0);
   let dy = -Math.abs(y1-y0);
+  // Optimize performance when drawing vertical / horizontal lines
   if (dy == 0) {
+    if (x0 > x1) {
+      var temp = x1;
+      x1 = x0;
+      x0 = temp;
+    }
     for (var i = x0; i <= x1; i++) {
       plot(i, y0, strokevalue);
     }
   } else if (dx == 0) {
+    if (y0 > y1) {
+      var temp = y1;
+      y1 = y0;
+      y0 = temp;
+    }
     for (var i = y0; i <= y1; i++) {
       plot(x0, i, strokevalue);
     }
-  } else {
+  } else { // BRESENHAM'S LINE ALGORITHM
     let sx = (x0 < x1) ? 1 : -1;
     let sy = (y0 < y1) ? 1 : -1;
     let err = dx + dy;

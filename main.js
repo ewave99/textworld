@@ -1,33 +1,35 @@
-let offsetx = 0, offsety = 0;
+/*
+DEMONSTRATION WITH A SIMPLE BOUNCING BALL
+*/
 
-const movements = {
-  'ArrowRight': () => offsetx+=2,
-  'ArrowLeft': () => offsetx-=2,
-  'ArrowUp': () => offsety--,
-  'ArrowDown': () => offsety++
-}
+let balldims = [4, 2];
+let ballpos;
+let speed = 1;
 
-function drawWorld() {
-  let simplex = new SimplexNoise();
-  let pointsacross = 10;
-  let heights = _.range(pointsacross).map(i => Math.round((simplex.noise2D(i, 0)+1)*10));
-  let interval = Math.floor(CHARS_ACROSS / pointsacross);
-  for (var i = 0; i < heights.length-1; i++) {
-    let x1 = i * interval;
-    let y1 = heights[i];
-    point(x1, y1)
-  }
-  updateDisplay();
+// const movements = {
+//   'ArrowRight': () => ballpos[0]+=2,
+//   'ArrowLeft': () => ballpos[0]-=2,
+//   'ArrowUp': () => ballpos[1]--,
+//   'ArrowDown': () => ballpos[1]++
+// }
+
+function setup() {
+  ballpos = [Math.round(CHARS_ACROSS/2), Math.round(CHARS_DOWN/2)];
+  setInterval(draw, 1000/FPS);
 }
 
 function draw() {
   CHARS = [];
-  // drawWorld();
+  ballpos[0] += speed;
+  if (ballpos[0]+balldims[0]+1 >= CHARS_ACROSS || ballpos[0] <= 0) {
+    speed = -speed;
+  }
+  rect(...ballpos, ...balldims, {fill:true});
 }
 
-document.onkeydown = function(e) {
-  if (Object.keys(movements).includes(e.code)) {
-    movements[e.code]();
-    draw();
-  }
-}
+// document.onkeydown = function(e) {
+//   if (Object.keys(movements).includes(e.code)) {
+//     movements[e.code]();
+//     draw();
+//   }
+// }
