@@ -92,22 +92,39 @@ function setDimensions() {
 }
 
 // EVENTS
+let SHIFT_DOWN = false;
 function mouseDown(e) {}
 function mouseUp() {}
 function mouseDrag(e) {}
 document.onmousedown = function (e) {
-  e = e || window.event;
-  e.preventDefault();
-
-  mouseDown(e);
-  document.onmouseup = function () {
-    mouseUp();
-    document.onmouseup = null;
-    document.onmousemove = null;
-  };
-  document.onmousemove = function (e) {
+  if (!SHIFT_DOWN) {
     e = e || window.event;
     e.preventDefault();
-    mouseDrag(e);
-  };
+
+    mouseDown(e);
+    document.onmouseup = function () {
+      mouseUp();
+      document.onmouseup = null;
+      document.onmousemove = null;
+    };
+    document.onmousemove = function (e) {
+      e = e || window.event;
+      e.preventDefault();
+      mouseDrag(e);
+    };
+  }
+}
+document.onkeydown = function (e) {
+  if (event.isComposing || event.keyCode === 229) {
+    return;
+  }
+  if (event.key == 'Shift') {
+    SHIFT_DOWN = true;
+  }
+}
+document.onkeyup = function (e) {
+  if (event.isComposing || event.keyCode === 229) {
+    return;
+  }
+  SHIFT_DOWN = false;
 }
