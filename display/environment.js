@@ -90,3 +90,24 @@ function setDimensions() {
   CHARS_ACROSS = Math.floor(window.innerWidth / CHAR_WIDTH )-2;
   CHARS_DOWN = Math.floor(window.innerHeight / CHAR_HEIGHT)-2;
 }
+
+// EVENTS
+function mouseDown(e) {}
+function mouseUp() {}
+function mouseDrag(e) {}
+document.onmousedown = function (e) {
+  e = e || window.event;
+  e.preventDefault();
+
+  mouseDown(e);
+  document.onmouseup = function () {
+    mouseUp();
+    document.onmouseup = null;
+    document.onmousemove = null;
+  };
+  document.onmousemove = function (e) {
+    e = e || window.event;
+    e.preventDefault();
+    mouseDrag(e);
+  };
+}

@@ -1,8 +1,19 @@
 function draw() {
   CHARS = [];
-  let dims = [
-    Math.round(CHARS_ACROSS/2), Math.round(CHARS_DOWN/2),
-    Math.round(CHARS_ACROSS/2-2), Math.round(CHARS_DOWN/2),
-  ]
-  ellipse(...dims, {fill:true});
+}
+
+let mouseX, mouseY;
+
+function mouseDown(e) {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  console.log(mouseX, mouseY);
+}
+function mouseUp() {
+  console.log(mouseX, mouseY);
+}
+function mouseDrag(e) {
+
+  mouseX = e.clientX;
+  mouseY = e.clientY;
 }
