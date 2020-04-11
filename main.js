@@ -3,17 +3,19 @@ function draw() {
 }
 
 let mouseX, mouseY;
-
 function mouseDown(e) {
   mouseX = e.clientX;
   mouseY = e.clientY;
-  console.log(mouseX, mouseY);
+  let cx = Math.floor(mouseX / CHAR_WIDTH)-2;
+  let cy = Math.floor(mouseY / CHAR_HEIGHT)-1;
+  plot(cx, cy);
 }
 function mouseUp() {
-  console.log(mouseX, mouseY);
 }
 function mouseDrag(e) {
-
   mouseX = e.clientX;
   mouseY = e.clientY;
+  let cx = Math.floor(mouseX / CHAR_WIDTH)-2;
+  let cy = Math.floor(mouseY / CHAR_HEIGHT)-1;
+  plot(cx, cy);
 }
