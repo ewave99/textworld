@@ -5,6 +5,7 @@
 const DISPLAY = document.getElementById('display');
 const TEXTSIZE = 8; // works with any font size
 document.body.style.fontSize = TEXTSIZE.toString() + 'px';
+document.body.style.cursor = 'default';
 let CHARS_ACROSS, CHARS_DOWN;
 let CHAR_WIDTH, CHAR_HEIGHT;
 let CHARS = [];
@@ -92,12 +93,12 @@ function setDimensions() {
 }
 
 // EVENTS
-let SHIFT_DOWN = false;
+let ALT_DOWN = false;
 function mouseDown(e) {}
 function mouseUp() {}
 function mouseDrag(e) {}
 document.onmousedown = function (e) {
-  if (!SHIFT_DOWN) {
+  if (!ALT_DOWN) {
     e = e || window.event;
     e.preventDefault();
 
@@ -118,13 +119,17 @@ document.onkeydown = function (e) {
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
-  if (event.key == 'Shift') {
-    SHIFT_DOWN = true;
+  if (event.key == 'Alt') {
+    ALT_DOWN = true;
+    document.body.style.cursor = 'text';
   }
 }
 document.onkeyup = function (e) {
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
-  SHIFT_DOWN = false;
+  if (event.key == 'Alt') {
+    ALT_DOWN = false;
+    document.body.style.cursor = 'default';
+  }
 }
