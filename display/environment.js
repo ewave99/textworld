@@ -24,9 +24,11 @@ function updateDisplay() {
   // Joins the elements in the sub-arrays, resulting in an array of strings
   //   (lines which can now be displayed).
   let rows = _.chunk(CHARS, CHARS_ACROSS)
-  .map(row => row
-    .map(char => char ? 'x' : ' ') // This works because 0 is a falsy value
-    .join('')
+    .map(row => String.fromCharCode(...(
+      row.map(
+        char => (typeof char == 'number' && char >= 32 && char <= 176) ? char : 32
+      )
+    ))
   );
 
   for (var i = 0; i < CHARS_DOWN; i++) {
