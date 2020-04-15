@@ -9,7 +9,7 @@ Supports drawing rudimentary shapes (with commands):
 - Ellipse
 - Arc
 
-Libraries used:
+### Libraries used:
 - Lodash
 
 ### Branches
