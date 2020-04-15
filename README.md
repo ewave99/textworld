@@ -2,7 +2,7 @@
 
 A simple homemade framework to create drawings in the browser using a text-based display.
 
-Supports drawing rudimentary shapes:
+Supports drawing rudimentary shapes (with commands):
 - Point
 - Line
 - Rectangle
@@ -11,6 +11,7 @@ Supports drawing rudimentary shapes:
 
 Libraries used:
 - Lodash
-- simplex-noise.js* (jwagner)
 
-\*This is included as I have been experimenting with it, but it is not actually implemented in the present version
+In the future: 
+- Develop the 'drawing' branch to add a menu system to draw different kinds of shapes
+- Find a way of loading a file containing ascii art
