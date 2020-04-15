@@ -12,6 +12,14 @@ Supports drawing rudimentary shapes (with commands):
 Libraries used:
 - Lodash
 
-In the future: 
+### Branches
+
+master: 
+- The 'testing ground' for features of the other branches
+
+drawing: 
+- Draw with the mouse (hold Alt if you want to actually select text)
+
+### In the future: 
 - Develop the 'drawing' branch to add a menu system to draw different kinds of shapes
 - Find a way of loading a file containing ascii art
