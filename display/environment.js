@@ -3,7 +3,7 @@
 // }
 
 const DISPLAY = document.getElementById('display');
-const TEXTSIZE = 8; // works with any font size
+const TEXTSIZE = 10; // works with any font size
 document.body.style.fontSize = TEXTSIZE.toString() + 'px';
 document.body.style.cursor = 'default';
 let CHARS_ACROSS, CHARS_DOWN;

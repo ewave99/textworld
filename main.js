@@ -1,20 +1,28 @@
+let controlpanel;
+
 function setup() {
   CHARS = [];
+  controlpanel = new ControlPanel();
 }
 
 function draw() {
   CHARS = [];
-  label(10, 10, 'All human beings are born free and equal in dignity and rights.')
-  label(25, 20, 'They are endowed with reason and conscience and should act toward one\
-  another in a spirit of brotherhood.')
+  controlpanel.draw();
+  updateDisplay();
+}
+
+function getCharPos(x, y) {
+  return {
+    x: Math.floor(x / CHAR_WIDTH)-2,
+    y: Math.floor((mouseY-0.5) / CHAR_HEIGHT)-1
+  };
 }
 
 function mouseDraw(e) {
   mouseX = e.clientX;
   mouseY = e.clientY;
-  let cx = Math.floor(mouseX / CHAR_WIDTH)-2;
-  let cy = Math.floor((mouseY-0.5) / CHAR_HEIGHT)-1;
-  plot(cx, cy);
+  let pos = getCharPos(mouseX, mouseY);
+  plot(pos.x, pos.y, {update:true, bound_right:CHARS_ACROSS-21});
 }
 
 let mouseX, mouseY;
