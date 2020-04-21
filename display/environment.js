@@ -46,9 +46,11 @@ document.body.onload = function() {
   draw();
 }
 
+function windowResize() {}
 window.onresize = function () {
   setDimensions();
   setLines();
+  windowResize();
   draw();
 }
 

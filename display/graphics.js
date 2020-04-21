@@ -3,6 +3,10 @@
 const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
+function snapshot(x=0, y=0, w=CHARS_ACROSS, h=CHARS_DOWN) {
+  
+}
+
 function label(x, y, text, {
   update = false,
   bound_left = 0,
