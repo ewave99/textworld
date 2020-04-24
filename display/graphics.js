@@ -4,7 +4,39 @@ const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
 function snapshot(x=0, y=0, w=CHARS_ACROSS, h=CHARS_DOWN) {
-  
+  let raw = [];
+  for (var i = 0; i < h; i++) {
+    raw = raw.concat(CHARS.slice(
+      (i+y)*CHARS_ACROSS+x,
+      (i+y)*CHARS_ACROSS+x+w
+    ));
+  }
+  for (var i = 0; i < raw.length; i++) {
+    raw[i] = (typeof raw[i] == 'number' && raw[i] >= 32 && raw[i] <= 176) ? raw[i] : 32
+  }
+  let compressed = [];
+  let index = 0;
+  let rep;
+  while (index < raw.length) {
+    rep = 1;
+    while (raw[index] == raw[index+1] && index < raw.length) {
+      rep++;
+      index++;
+    }
+    if (rep == 1) {
+      compressed.push(`${String.fromCharCode(raw[index])}`);
+    } else {
+      compressed.push(`${rep}:${String.fromCharCode(raw[index])}`);
+    }
+    index++;
+  }
+  return {
+    x: x,
+    y: y,
+    w: w,
+    h: h,
+    data: compressed.toString()
+  }
 }
 
 function label(x, y, text, {
@@ -16,7 +48,7 @@ function label(x, y, text, {
   reverse_x = false
 } = {}) {
   if (reverse_x) {
-    x -= text.length;
+    x -= text.length-1;
   }
   // let lines = text.split('\n');
   for (var i = 0; i < text.length; i++) {

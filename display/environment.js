@@ -44,6 +44,7 @@ document.body.onload = function() {
   setLines();
   setup();
   draw();
+  document.onmousemove = mouseMove;
 }
 
 function windowResize() {}
@@ -101,6 +102,7 @@ let ALT_DOWN = false;
 function mouseDown(e) {}
 function mouseUp() {}
 function mouseDrag(e) {}
+function mouseMove(e) {}
 document.onmousedown = function (e) {
   if (!ALT_DOWN) {
     e = e || window.event;
@@ -110,7 +112,7 @@ document.onmousedown = function (e) {
     document.onmouseup = function () {
       mouseUp();
       document.onmouseup = null;
-      document.onmousemove = null;
+      document.onmousemove = mouseMove;
     };
     document.onmousemove = function (e) {
       e = e || window.event;
@@ -126,6 +128,7 @@ document.onkeydown = function (e) {
   if (event.key == 'Alt') {
     ALT_DOWN = true;
     document.body.style.cursor = 'text';
+    document.onmousemove = null;
   }
 }
 document.onkeyup = function (e) {
@@ -135,5 +138,6 @@ document.onkeyup = function (e) {
   if (event.key == 'Alt') {
     ALT_DOWN = false;
     document.body.style.cursor = 'default';
+    document.onmousemove = mouseMove;
   }
 }

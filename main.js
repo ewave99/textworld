@@ -4,12 +4,13 @@ let mouseX, mouseY, mouseX_prev, mouseY_prev;
 function setup() {
   CHARS = [];
   controlpanel = new ControlPanel();
-  controlpanel.init();
+  controlpanel.draw();
+  updateDisplay();
 }
 
 function windowResize() {
   CHARS = [];
-  controlpanel.redraw();
+  controlpanel.draw();
 }
 
 function getCharPos(x, y) {
@@ -19,12 +20,15 @@ function getCharPos(x, y) {
   };
 }
 
+function mouseMove(e) {
+  // console.log(e.clientX, e.clientY);
+}
+
 function mouseDraw(e) {
   mouseX = e.clientX;
   mouseY = e.clientY;
   let pos = getCharPos(mouseX, mouseY);
-  // rect(0, 0, CHARS_ACROSS-21, CHARS_DOWN, {fill:true, fillvalue:0, stroke:false});
-  plot(pos.x, pos.y, {update:true, bound_right:CHARS_ACROSS-21});
+  plot(pos.x, pos.y, {update:true, bound_left:21});
 }
 
 function mouseDown(e) {
