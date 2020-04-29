@@ -67,7 +67,8 @@ class Radio {
     ) {
       this.select(i);
       updateDisplay();
-    }
+      return true
+    } else return false;
   }
 }
 
@@ -91,6 +92,6 @@ class ControlPanel {
   }
 
   mouseclick(pos) {
-    this.radio.mouseclick(pos, {bound_right:20});
+    return this.radio.mouseclick(pos, {bound_right:20});
   }
 }

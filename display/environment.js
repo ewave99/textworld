@@ -97,6 +97,13 @@ function setDimensions() {
   CHARS_DOWN = Math.floor(window.innerHeight / CHAR_HEIGHT)-2;
 }
 
+function getCharPos(x, y) {
+  return {
+    x: Math.floor(x / CHAR_WIDTH)-2,
+    y: Math.floor((mouseY-0.5) / CHAR_HEIGHT)-1
+  };
+}
+
 // EVENTS
 let ALT_DOWN = false;
 function mouseDown(e) {}

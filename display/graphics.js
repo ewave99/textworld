@@ -3,42 +3,6 @@
 const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
-function snapshot(x=0, y=0, w=CHARS_ACROSS, h=CHARS_DOWN) {
-  let raw = [];
-  for (var i = 0; i < h; i++) {
-    raw = raw.concat(CHARS.slice(
-      (i+y)*CHARS_ACROSS+x,
-      (i+y)*CHARS_ACROSS+x+w
-    ));
-  }
-  for (var i = 0; i < raw.length; i++) {
-    raw[i] = (typeof raw[i] == 'number' && raw[i] >= 32 && raw[i] <= 176) ? raw[i] : 32
-  }
-  let compressed = [];
-  let index = 0;
-  let rep;
-  while (index < raw.length) {
-    rep = 1;
-    while (raw[index] == raw[index+1] && index < raw.length) {
-      rep++;
-      index++;
-    }
-    if (rep == 1) {
-      compressed.push(`${String.fromCharCode(raw[index])}`);
-    } else {
-      compressed.push(`${rep}:${String.fromCharCode(raw[index])}`);
-    }
-    index++;
-  }
-  return {
-    x: x,
-    y: y,
-    w: w,
-    h: h,
-    data: compressed.toString()
-  }
-}
-
 function label(x, y, text, {
   update = false,
   bound_left = 0,
@@ -47,20 +11,22 @@ function label(x, y, text, {
   bound_bottom = CHARS_DOWN,
   reverse_x = false
 } = {}) {
-  if (reverse_x) {
-    x -= text.length-1;
+  if (y >= bound_top && y <= bound_bottom) {
+    if (reverse_x) {
+      x -= text.length-1;
+    }
+    // let lines = text.split('\n');
+    for (var i = 0; i < text.length; i++) {
+      plot(x+i, y, {
+        fillvalue: text.charAt(i),
+        bound_left: bound_left,
+        bound_right: bound_right,
+        bound_top: bound_top,
+        bound_bottom: bound_bottom,
+      });
+    }
+    if (update) updateDisplay();
   }
-  // let lines = text.split('\n');
-  for (var i = 0; i < text.length; i++) {
-    plot(x+i, y, {
-      fillvalue: text.charAt(i),
-      bound_left: bound_left,
-      bound_right: bound_right,
-      bound_top: bound_top,
-      bound_bottom: bound_bottom,
-    });
-  }
-  if (update) updateDisplay();
 }
 
 function plot(x, y, {
@@ -188,10 +154,34 @@ function rect(x, y, w, h, {
     }
   }
   if (stroke) {
-    line(x, y, x+w, y, {strokevalue:strokevalue});
-    line(x+w, y, x+w, y+h, {strokevalue:strokevalue});
-    line(x+w, y+h, x, y+h, {strokevalue:strokevalue});
-    line(x, y+h, x, y, {strokevalue:strokevalue});
+    line(x, y, x+w, y, {
+      strokevalue:strokevalue,
+      bound_left: bound_left,
+      bound_right: bound_right,
+      bound_top: bound_top,
+      bound_bottom: bound_bottom
+    });
+    line(x+w, y, x+w, y+h, {
+      strokevalue:strokevalue,
+      bound_left: bound_left,
+      bound_right: bound_right,
+      bound_top: bound_top,
+      bound_bottom: bound_bottom
+    });
+    line(x+w, y+h, x, y+h, {
+      strokevalue:strokevalue,
+      bound_left: bound_left,
+      bound_right: bound_right,
+      bound_top: bound_top,
+      bound_bottom: bound_bottom
+    });
+    line(x, y+h, x, y, {
+      strokevalue:strokevalue,
+      bound_left: bound_left,
+      bound_right: bound_right,
+      bound_top: bound_top,
+      bound_bottom: bound_bottom
+    });
   }
   if (update) updateDisplay();
 }
@@ -295,4 +285,69 @@ function line(x0, y0, x1, y1, {
     });
   }
   if (update) updateDisplay();
+}
+
+function image(x, y, dataobj, {
+  update = false,
+  bound_left = 0,
+  bound_right = CHARS_ACROSS,
+  bound_top = 0,
+  bound_bottom = CHARS_DOWN
+} = {}) {
+  let lines;
+  if (typeof dataobj == 'string') {
+    lines = dataobj.split('\n');
+  } else if (typeof dataobj == 'object') {
+    if (Array.isArray(dataobj)) {
+      lines = dataobj.map(row => String.fromCharCode(...row));
+    } else if (dataobj.data) {
+      lines = dataobj.data.map(row => String.fromCharCode(...row))
+    } else throw 'Invalid data.';
+  } else throw 'Invalid data.'
+  for (var i = 0; i < lines.length; i++) {
+    if (y < bound_top || y > bound_bottom) break;
+    label(x, y+i, lines[i], {
+      bound_left: bound_left,
+      bound_right: bound_right,
+      bound_top: bound_top,
+      bound_bottom: bound_bottom
+    });
+  }
+  if (update) updateDisplay();
+}
+
+function snapshot(x=0, y=0, w=CHARS_ACROSS, h=CHARS_DOWN) {
+  let data = [];
+  let row;
+  for (var i = 0; i < h; i++) {
+    row = CHARS.slice(
+      (i+y)*CHARS_ACROSS+x,
+      (i+y)*CHARS_ACROSS+x+w
+    )
+    for (var j = 0; j < row.length; j++) {
+      row[j] = (
+        typeof row[j] == 'number' &&
+        row[j] >= 32 &&
+        row[j] <= 176
+      ) ? row[j] : 32;
+    }
+    data.push(row);
+  }
+  dataobj = new Image(data)
+  return dataobj;
+}
+
+class Image {
+  constructor(data) {
+    if (Array.isArray(data)) {
+      if (data.slice(0, -1).every(elem => Array.isArray(elem) && elem.length == data[0].length)) {
+        this.data = data;
+      } else throw 'Invalid data.'+data.toString();
+    } else if (typeof data == 'string') {
+      this.data = data.split('\n').map(line => line.map(char => char.charCodeAt()));
+    } else throw 'Invalid datatype.'+data.toString();
+  }
+  toString() {
+    return this.data.map(row => String.fromCharCode(...row)).join('\n');
+  }
 }
