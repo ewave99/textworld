@@ -4,6 +4,7 @@ const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
 const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
 
 function label(x, y, text, {
+  surface = CHARS,
   update = false,
   bound_left = 0,
   bound_right = CHARS_ACROSS,
@@ -18,6 +19,7 @@ function label(x, y, text, {
     // let lines = text.split('\n');
     for (var i = 0; i < text.length; i++) {
       plot(x+i, y, {
+        surface: surface,
         fillvalue: text.charAt(i),
         bound_left: bound_left,
         bound_right: bound_right,
@@ -30,6 +32,7 @@ function label(x, y, text, {
 }
 
 function plot(x, y, {
+  surface = CHARS,
   fillvalue = 120,
   update = false,
   bound_left = 0,
@@ -44,12 +47,13 @@ function plot(x, y, {
   let within_bound_y = (y >= bound_top && y < bound_bottom);
   if (within_bound_x && within_bound_y) {
     let index = y * CHARS_ACROSS + x;
-    CHARS[index] = fillvalue;
+    surface[index] = fillvalue;
   }
   if (update) updateDisplay();
 }
 
 function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
+  surface = CHARS,
   stroke = true,
   strokevalue = 120,
   fill = false,
@@ -76,6 +80,7 @@ function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
         px = Math.round(COS_TABLE[i] * w + x);
         py = Math.round(SIN_TABLE[i] * h + y);
         plot(px, py, {
+          surface: surface,
           fillvalue: strokevalue,
           bound_left: bound_left,
           bound_right: bound_right,
@@ -94,6 +99,7 @@ function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
     let dx = 0;
     for (var px = 1-w; px <= w-1; px++) {
       plot(px+x, y, {
+        surface: surface,
         fillvalue: fillvalue,
         bound_left: bound_left,
         bound_right: bound_right,
@@ -110,6 +116,7 @@ function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
       x0 = x1;
       for (var px = 1-x0; px <= x0-1; px++) {
         plot(px+x, -py+y, {
+          surface: surface,
           fillvalue: fillvalue,
           bound_left: bound_left,
           bound_right: bound_right,
@@ -117,6 +124,7 @@ function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
           bound_bottom: bound_bottom
         });
         plot(px+x, py+y, {
+          surface: surface,
           fillvalue: fillvalue,
           bound_left: bound_left,
           bound_right: bound_right,
@@ -130,6 +138,7 @@ function ellipse(x, y, w, h, { // The syntax here allows keyword arguments
 }
 
 function rect(x, y, w, h, {
+  surface = CHARS,
   stroke = true,
   strokevalue = 120,
   fill = false,
@@ -144,6 +153,7 @@ function rect(x, y, w, h, {
     for (var j = 1; j < h; j++) {
       for (var i = 1; i < w; i++) {
         plot(i+x, j+y, {
+          surface: surface,
           fillvalue: fillvalue,
           bound_left: bound_left,
           bound_right: bound_right,
@@ -155,6 +165,7 @@ function rect(x, y, w, h, {
   }
   if (stroke) {
     line(x, y, x+w, y, {
+      surface: surface,
       strokevalue:strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -162,6 +173,7 @@ function rect(x, y, w, h, {
       bound_bottom: bound_bottom
     });
     line(x+w, y, x+w, y+h, {
+      surface: surface,
       strokevalue:strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -169,6 +181,7 @@ function rect(x, y, w, h, {
       bound_bottom: bound_bottom
     });
     line(x+w, y+h, x, y+h, {
+      surface: surface,
       strokevalue:strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -176,6 +189,7 @@ function rect(x, y, w, h, {
       bound_bottom: bound_bottom
     });
     line(x, y+h, x, y, {
+      surface: surface,
       strokevalue:strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -187,6 +201,7 @@ function rect(x, y, w, h, {
 }
 
 function arc(x, y, w, h, start, end, {
+  surface = CHARS,
   strokevalue = 120,
   update,
   bound_left = 0,
@@ -203,6 +218,7 @@ function arc(x, y, w, h, start, end, {
     px = Math.round(COS_TABLE[i % 360] * w + x);
     py = Math.round(SIN_TABLE[i % 360] * h + y);
     plot(px, py, {
+      surface: surface,
       fillvalue: strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -214,6 +230,7 @@ function arc(x, y, w, h, start, end, {
 }
 
 function line(x0, y0, x1, y1, {
+  surface = CHARS,
   strokevalue = 120,
   update = false,
   bound_left = 0,
@@ -232,6 +249,7 @@ function line(x0, y0, x1, y1, {
     }
     for (var i = x0; i <= x1; i++) {
       plot(i, y0, {
+        surface: surface,
         fillvalue: strokevalue,
         bound_left: bound_left,
         bound_right: bound_right,
@@ -247,6 +265,7 @@ function line(x0, y0, x1, y1, {
     }
     for (var i = y0; i <= y1; i++) {
       plot(x0, i, {
+        surface: surface,
         fillvalue: strokevalue,
         bound_left: bound_left,
         bound_right: bound_right,
@@ -260,6 +279,7 @@ function line(x0, y0, x1, y1, {
     let err = dx + dy;
     while (x0 != x1 || y0 != y1) {
       plot(x0, y0, {
+        surface: surface,
         fillvalue: strokevalue,
         bound_left: bound_left,
         bound_right: bound_right,
@@ -277,6 +297,7 @@ function line(x0, y0, x1, y1, {
       }
     }
     plot(x0, y0, {
+      surface: surface,
       fillvalue: strokevalue,
       bound_left: bound_left,
       bound_right: bound_right,
@@ -288,6 +309,7 @@ function line(x0, y0, x1, y1, {
 }
 
 function image(x, y, dataobj, {
+  surface = CHARS,
   update = false,
   bound_left = 0,
   bound_right = CHARS_ACROSS,
@@ -307,6 +329,7 @@ function image(x, y, dataobj, {
   for (var i = 0; i < lines.length; i++) {
     if (y < bound_top || y > bound_bottom) break;
     label(x, y+i, lines[i], {
+      surface: surface,
       bound_left: bound_left,
       bound_right: bound_right,
       bound_top: bound_top,
