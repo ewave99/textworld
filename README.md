@@ -7,7 +7,7 @@ Supports drawing rudimentary shapes (with commands):
 - Line
 - Rectangle
 - Ellipse
-- Arc
+- Arc (doesn't work yet)
 
 ### Libraries used:
 - Lodash
