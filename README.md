@@ -1,6 +1,6 @@
 # textworld
 
-A simple homemade framework to create drawings in the browser using a text-based display.
+A simple homemade program to create drawings in the browser using a text-based display.
 
 Supports drawing rudimentary shapes (with commands):
 - Point
