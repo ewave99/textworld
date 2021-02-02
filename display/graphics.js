@@ -1,7 +1,9 @@
 // These are pre-defined sets of values so the program doesn't need
 //   to calculate cos and sin every time it draws.
-const COS_TABLE = _.range(360).map(i => Math.cos(i * Math.PI / 180));
-const SIN_TABLE = _.range(360).map(i => Math.sin(i * Math.PI / 180));
+const COS_TABLE = _.range ( 360 )
+                   .map ( i => Math.cos ( i * Math.PI / 180 ) );
+const SIN_TABLE = _.range ( 360 )
+                   .map ( i => Math.sin ( i * Math.PI / 180 ) );
 
 function label(x, y, text, {
   surface = CHARS,
