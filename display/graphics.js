@@ -341,25 +341,34 @@ function image(x, y, dataobj, {
   if (update) updateDisplay();
 }
 
-function snapshot(x=0, y=0, w=CHARS_ACROSS, h=CHARS_DOWN) {
-  let data = [];
-  let row;
-  for (var i = 0; i < h; i++) {
-    row = CHARS.slice(
-      (i+y)*CHARS_ACROSS+x,
-      (i+y)*CHARS_ACROSS+x+w
-    )
-    for (var j = 0; j < row.length; j++) {
-      row[j] = (
-        typeof row[j] == 'number' &&
-        row[j] >= 32 &&
-        row[j] <= 176
-      ) ? row[j] : 32;
+function snapshot ( x = 0, y = 0, w = CHARS_ACROSS, h = CHARS_DOWN ) {
+    let data = [];
+
+    let row;
+
+    for ( var i = 0; i < h; i++ ) {
+        row = CHARS.slice (
+            ( i + y ) * CHARS_ACROSS + x,
+            ( i + y ) * CHARS_ACROSS + x + w
+        );
+
+        for ( var j = 0; j < w; j++ ) {
+            row [ j ] = (
+                typeof row [ j ] == 'number'
+                &&
+                row [ j ] >= 32
+                &&
+                row [ j ] <= 176
+            ) ? row [ j ]
+              : 32;
+        }
+
+        data.push ( row );
     }
-    data.push(row);
-  }
-  dataobj = new Image(data)
-  return dataobj;
+
+    dataobj = new Image ( data );
+
+    return dataobj;
 }
 
 class Image {
