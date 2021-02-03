@@ -1,6 +1,45 @@
 const Automaton = ( function () {
     let pointer_x = 0, pointer_y = 0;
 
+    const getCurrentWord = () => {
+        let word_x = getX ();
+        let word_y = getY ();
+
+        let word = "";
+
+        let current_char;
+
+        while (
+            (
+                current_char
+                    = snapshot ( getX (), getY (), 1, 1 ) .toString ()
+            )
+            === ' '
+        ) {
+            increment ();
+        }
+
+        while (
+            (
+                current_char
+                    = snapshot ( getX (), getY (), 1, 1 ) .toString ()
+            )
+            !== ' '
+        ) {
+            word += current_char;
+
+            increment ();
+        }
+
+        increment ();
+
+        return {
+            x:    word_x,
+            y:    word_y,
+            word: word
+        }
+    }
+
     const setInitialState = ( x, y, string ) => {
         label ( x, y, string, { update: true } );
 
@@ -8,9 +47,9 @@ const Automaton = ( function () {
         setY ( y );
     }
 
-    const getX = () => x;
+    const getX = () => pointer_x;
     
-    const getY = () => y;
+    const getY = () => pointer_y;
 
     const setX = ( value ) => {
         pointer_x = value;
@@ -21,11 +60,13 @@ const Automaton = ( function () {
     }
 
     const increment = () => {
-        if ( ++pointer_x > CHARS_ACROSS ) pointer_y++;
+        if ( ++pointer_x > CHARS_ACROSS ) ++pointer_y;
         pointer_x = pointer_x % CHARS_ACROSS;
+        pointer_y = pointer_y % CHARS_DOWN;
     }
 
     return {
+        getCurrentWord:  getCurrentWord,
         setInitialState: setInitialState,
         increment:       increment,
         getX:            getX,
