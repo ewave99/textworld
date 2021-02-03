@@ -1,8 +1,84 @@
 const Automaton = ( function () {
     let pointer_x = 0, pointer_y = 0;
 
+    const evolveWord = ( word ) => {
+        let tally = {};
+
+        word .split ( '' ) .forEach ( character => {
+            tally [ character ]
+                = Object.keys ( tally ) .indexOf ( character )
+                    !== -1
+                    ? tally [ character ] + 1
+                    : 1;
+        } );
+
+        return Object.keys ( tally )
+            .sort ()
+            .map  (
+                character => [
+                    tally [ character ]
+                        < 10
+                        ? tally [ character ]
+                        : '0',
+                    character
+                ]
+                .join ( '' )
+            )
+            .join ( '' );
+    }
+
+    const workOutNewX = ( word, new_word, original_x ) =>
+        new_word > word
+        ? original_x - 1
+        : (
+            new_word < word
+            ? original_x + 1
+            : original_x
+        );
+
+    const workOutNewY = ( word, new_word, original_y ) =>
+        new_word.length > word.length
+        ? original_y + 1
+        : (
+            new_word.length < word.length
+            ? original_y - 1
+            : original_y
+        );
+
+    const mergeWordWithScreen = ( word, x, y ) => {
+        return word .split ( '' )
+            .map (
+                ( character, index ) => {
+                    let new_character_raw
+                        = parseInt (
+                            snapshot ( x + index, y, 1, 1 )
+                                .toString ()
+                        )
+                        + parseInt ( character );
+                    return new_character_raw < 10
+                        ? new_character_raw.toString ()
+                        : '0';
+                }
+            )
+            .join ( '' );
+    }
+
+    const displayWord = ( word, new_word ) => {
+        let original_x = getX () - word.length;
+        let original_y = pointer_y; // just an alias
+
+        let new_x = workOutNewX ( word, new_word, original_x );
+        let new_y = workOutNewY ( word, new_word, original_y );
+
+        let merged_word = mergeWordWithScreen ( new_word, new_x, new_y );
+        label ( new_x, new_y, merged_word, { update: true } );
+        return merged_word;
+    }
+
     const incrementGeneration = () => {
-    };
+        let word = getCurrentWord ();
+        return displayWord ( word, evolveWord ( word ) );
+    }
 
     const getCurrentWord = () => {
         let word_x = getX ();
@@ -36,11 +112,7 @@ const Automaton = ( function () {
 
         incrementPointer ();
 
-        return {
-            x:    word_x,
-            y:    word_y,
-            word: word
-        }
+        return word;
     }
 
     const setInitialState = ( x, y, string ) => {
@@ -69,11 +141,13 @@ const Automaton = ( function () {
     }
 
     return {
-        getCurrentWord:   getCurrentWord,
-        setInitialState:  setInitialState,
-        incrementPointer: incrementPointer,
-        getX:             getX,
-        getY:             getY
+        getCurrentWord:      getCurrentWord,
+        evolveWord:          evolveWord,
+        setInitialState:     setInitialState,
+        incrementPointer:    incrementPointer,
+        incrementGeneration: incrementGeneration,
+        getX:                getX,
+        getY:                getY
     };
 } ) ();
 
@@ -89,7 +163,7 @@ function setup () {
     Automaton.setInitialState (
         Math.round ( CHARS_ACROSS / 2 ),
         Math.round ( CHARS_DOWN   / 2 ),
-        '30140159'
+        '1'
     );
 
     updateDisplay ();
