@@ -1,6 +1,9 @@
 const Automaton = ( function () {
     let pointer_x = 0, pointer_y = 0;
 
+    const incrementGeneration = () => {
+    };
+
     const getCurrentWord = () => {
         let word_x = getX ();
         let word_y = getY ();
@@ -14,9 +17,9 @@ const Automaton = ( function () {
                 current_char
                     = snapshot ( getX (), getY (), 1, 1 ) .toString ()
             )
-            === ' '
+            === '0'
         ) {
-            increment ();
+            incrementPointer ();
         }
 
         while (
@@ -24,14 +27,14 @@ const Automaton = ( function () {
                 current_char
                     = snapshot ( getX (), getY (), 1, 1 ) .toString ()
             )
-            !== ' '
+            !== '0'
         ) {
             word += current_char;
 
-            increment ();
+            incrementPointer ();
         }
 
-        increment ();
+        incrementPointer ();
 
         return {
             x:    word_x,
@@ -59,28 +62,34 @@ const Automaton = ( function () {
         pointer_y = value;
     }
 
-    const increment = () => {
+    const incrementPointer = () => {
         if ( ++pointer_x > CHARS_ACROSS ) ++pointer_y;
         pointer_x = pointer_x % CHARS_ACROSS;
         pointer_y = pointer_y % CHARS_DOWN;
     }
 
     return {
-        getCurrentWord:  getCurrentWord,
-        setInitialState: setInitialState,
-        increment:       increment,
-        getX:            getX,
-        getY:            getY
+        getCurrentWord:   getCurrentWord,
+        setInitialState:  setInitialState,
+        incrementPointer: incrementPointer,
+        getX:             getX,
+        getY:             getY
     };
 } ) ();
 
 function setup () {
     CHARS = [];
 
+    rect (
+        0,            0,
+        CHARS_ACROSS, CHARS_DOWN,
+        { fill: true, stroke: true, fillvalue: '0', strokevalue: '0' }
+    );
+
     Automaton.setInitialState (
         Math.round ( CHARS_ACROSS / 2 ),
         Math.round ( CHARS_DOWN   / 2 ),
-        '3 14 159'
+        '30140159'
     );
 
     updateDisplay ();
